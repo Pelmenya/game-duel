@@ -6,4 +6,5 @@ export type THero = {
     color: string;
     speed: number;
     direction: number;
-};
+    frequency: number;
+}

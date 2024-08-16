@@ -4,8 +4,18 @@ import { SettingsMenu } from '../game-menu/game-menu';
 import { THeroSettings } from '../../types/t-hero-settings';
 
 import s from './app.module.css';
+import { useAppDispatch, useAppSelector } from '../../redux/hooks';
+import { selectHeroes } from '../../redux/selectors/gameSettingsSelectors';
+import {
+    setHeroColor,
+    setHeroFrequency,
+    setHeroSpeed,
+} from '../../redux/slices/gameSettingsSlice';
 
 export const App: React.FC = () => {
+    const dispatch = useAppDispatch();
+    const heroes = useAppSelector(selectHeroes);
+
     const [selectedHero, setSelectedHero] = useState<number | null>(null);
     const [heroSettings, setHeroSettings] = useState<{
         [key: number]: THeroSettings;
@@ -27,6 +37,7 @@ export const App: React.FC = () => {
             ...prevSettings,
             [heroId]: { ...prevSettings[heroId], color },
         }));
+        dispatch(setHeroColor({ id: heroId - 1, color }));
     };
 
     const handleChangeSpeed = (heroId: number, speed: number) => {
@@ -34,6 +45,7 @@ export const App: React.FC = () => {
             ...prevSettings,
             [heroId]: { ...prevSettings[heroId], speed },
         }));
+        dispatch(setHeroSpeed({ id: heroId - 1, speed }));
     };
 
     const handleChangeFrequency = (heroId: number, frequency: number) => {
@@ -41,6 +53,7 @@ export const App: React.FC = () => {
             ...prevSettings,
             [heroId]: { ...prevSettings[heroId], frequency },
         }));
+        dispatch(setHeroFrequency({ id: heroId - 1, frequency }));
     };
 
     return (
@@ -53,7 +66,7 @@ export const App: React.FC = () => {
                 {selectedHero && (
                     <div className={selectedHero === 1 ? s.left : s.right}>
                         <SettingsMenu
-                            heroId={1}
+                            hero={heroes[selectedHero - 1]}
                             onClose={handleCloseMenu}
                             onChangeColor={handleChangeColor}
                             onChangeSpeed={handleChangeSpeed}

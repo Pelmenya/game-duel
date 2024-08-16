@@ -33,6 +33,7 @@ export const GameCanvas: React.FC<TGameCanvasProps> = ({
             color: heroSettings[1].color,
             speed: heroSettings[1].speed / 10,
             direction: 1,
+            frequency: 2
         },
         {
             id: 2,
@@ -42,6 +43,7 @@ export const GameCanvas: React.FC<TGameCanvasProps> = ({
             color: heroSettings[2].color,
             speed: heroSettings[2].speed / 10,
             direction: -1,
+            frequency: 2
         },
     ]);
     const spells = useRef<TSpell[]>([]);
@@ -111,6 +113,7 @@ export const GameCanvas: React.FC<TGameCanvasProps> = ({
             speed: 5,
             direction: hero.direction,
             ownerId: hero.id,
+            frequency: hero.frequency
         });
     };
 

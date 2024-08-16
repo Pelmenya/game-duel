@@ -17,6 +17,7 @@ const initialState: TGameSettingsState = {
       color: 'rgba(0, 0, 0, 0.7)',
       speed: 0.1,
       direction: 1,
+      frequency: 2,
     },
     {
       id: 2,
@@ -26,6 +27,7 @@ const initialState: TGameSettingsState = {
       color: '#ec8928',
       speed: 0.1,
       direction: -1,
+      frequency: 2
     },
   ],
   scores: {
@@ -38,19 +40,18 @@ export const gameSettingsSlice = createSlice({
   name: 'gameSettings',
   initialState,
   reducers: {
-    increment: (state) => {
-
+    setHeroColor: (state, action: PayloadAction<{ id: number, color: string }>) => {
+      state.heroes[action.payload.id].color = action.payload.color;
     },
-    decrement: (state) => {
-
+    setHeroSpeed: (state, action: PayloadAction<{ id: number, speed: number }>) => {
+      state.heroes[action.payload.id].speed = action.payload.speed;
     },
-    // Use the PayloadAction type to declare the contents of `action.payload`
-    incrementByAmount: (state, action: PayloadAction<number>) => {
-
+    setHeroFrequency: (state, action: PayloadAction<{ id: number, frequency: number }>) => {
+      state.heroes[action.payload.id].frequency = action.payload.frequency;
     },
   },
 });
 
-export const { increment, decrement, incrementByAmount } = gameSettingsSlice.actions;
+export const { setHeroColor, setHeroSpeed, setHeroFrequency } = gameSettingsSlice.actions;
 
 export const gameSettingsReducer = gameSettingsSlice.reducer;
