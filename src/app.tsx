@@ -1,9 +1,8 @@
 import React, { useState, useCallback } from 'react';
-
-
+import { GameCanvas } from './components/game-canvas/game-canvas';
+import { THeroSettings } from './types/t-hero-settings';
 
 import './app.css'
-import { THeroSettings } from './types/t-hero-settings';
 
 const App: React.FC = () => {
   const [selectedHero, setSelectedHero] = useState<number | null>(null);
@@ -43,6 +42,7 @@ const App: React.FC = () => {
 
   return (
     <div className="app">
+      <GameCanvas onHeroClick={handleHeroClick} heroSettings={heroSettings} />
     </div>
   );
 };
