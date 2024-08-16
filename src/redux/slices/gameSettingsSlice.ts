@@ -1,10 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { THero } from '../../types/t-hero';
-import { TScores } from '../../components/game-scores/game-scores';
 
 export type TGameSettingsState = {
   heroes: THero[];
-  scores: TScores;
 }
 
 const initialState: TGameSettingsState = {
@@ -14,8 +12,8 @@ const initialState: TGameSettingsState = {
       x: 50,
       y: 300,
       radius: 20,
-      color: 'rgba(0, 0, 0, 0.7)',
-      speed: 0.1,
+      color: '#565252',
+      speed: 1,
       direction: 1,
       frequency: 2,
     },
@@ -25,15 +23,11 @@ const initialState: TGameSettingsState = {
       y: 300,
       radius: 20,
       color: '#ec8928',
-      speed: 0.1,
+      speed: 1,
       direction: -1,
       frequency: 2
     },
   ],
-  scores: {
-    1: 0,
-    2: 0,
-  }
 };
 
 export const gameSettingsSlice = createSlice({
