@@ -1,9 +1,9 @@
 import React, { useState, useCallback } from 'react';
-import { GameCanvas } from './components/game-canvas/game-canvas';
-import { SettingsMenu } from './components/game-menu/game-menu';
-import { THeroSettings } from './types/t-hero-settings';
+import { GameCanvas } from '../game-canvas/game-canvas';
+import { SettingsMenu } from '../game-menu/game-menu';
+import { THeroSettings } from '../../types/t-hero-settings';
 
-import './app.css';
+import s from './app.module.css';
 
 export const App: React.FC = () => {
     const [selectedHero, setSelectedHero] = useState<number | null>(null);
@@ -44,14 +44,14 @@ export const App: React.FC = () => {
     };
 
     return (
-        <div className="app">
-            <div className="wrapper">
+        <div className={s.app}>
+            <div className={s.wrapper}>
                 <GameCanvas
                     onHeroClick={handleHeroClick}
                     heroSettings={heroSettings}
                 />
                 {selectedHero && (
-                    <div className={selectedHero === 1 ? 'left': 'right'}>
+                    <div className={selectedHero === 1 ? s.left : s.right}>
                         <SettingsMenu
                             heroId={1}
                             onClose={handleCloseMenu}

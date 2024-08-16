@@ -2,6 +2,9 @@ import React, { useRef, useEffect, useState } from 'react';
 import { THeroSettings } from '../../types/t-hero-settings';
 import { THero } from '../../types/t-hero';
 import { TSpell } from '../../types/t-spell';
+import { GameScores } from '../game-scores/game-scores';
+
+import s from './game-canvas.module.css';
 
 export type TGameCanvasProps = {
     onHeroClick: (heroId: number) => void;
@@ -189,7 +192,7 @@ export const GameCanvas: React.FC<TGameCanvasProps> = ({
     };
 
     return (
-        <div>
+        <div className={s.wrapper}>
             <canvas
                 ref={canvasRef}
                 width={800}
@@ -197,10 +200,7 @@ export const GameCanvas: React.FC<TGameCanvasProps> = ({
                 onClick={handleCanvasClick}
                 onMouseMove={handleMouseMove}
             />
-            <div className="scores">
-                <div>Hero 1 Score: {scores[1]}</div>
-                <div>Hero 2 Score: {scores[2]}</div>
-            </div>
+            <GameScores scores={scores}/>
         </div>
     );
 };
