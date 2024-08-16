@@ -17,8 +17,8 @@ export const GameCanvas: React.FC<TGameCanvasProps> = ({
 }) => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const [mousePos, setMousePos] = useState<{ x: number; y: number }>({
-        x: 0,
-        y: 0,
+        x: 50,
+        y: 50,
     });
     const [scores, setScores] = useState<{ [key: number]: number }>({
         1: 0,
@@ -45,51 +45,8 @@ export const GameCanvas: React.FC<TGameCanvasProps> = ({
         },
     ]);
     const spells = useRef<TSpell[]>([]);
+    const cursor = useRef<{x: number; y: number}>(mousePos);
 
-    useEffect(() => {
-        const canvas = canvasRef.current;
-        const ctx = canvas?.getContext('2d');
-        if (canvas && ctx) {
-            const render = () => {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                drawHeroes(ctx);
-                drawSpells(ctx);
-                updateHeroes();
-                updateSpells();
-                checkCollisions();
-                requestAnimationFrame(render);
-            };
-            render();
-        }
-    }, []);
-
-    useEffect(() => {
-        const intervalIds = heroes.current.map((hero) => {
-            const settings = heroSettings[hero.id];
-            hero.color = settings.color;
-            hero.speed = settings.speed / 10;
-            return setInterval(
-                () => shootSpell(hero),
-                1000 / settings.frequency
-            );
-        });
-
-        return () => {
-            intervalIds.forEach(clearInterval);
-        };
-    }, [heroSettings]);
-
-    useEffect(() => {
-        heroes.current.forEach((hero) => {
-            const dx = hero.x - mousePos.x;
-            const dy = hero.y - mousePos.y;
-            const distance = Math.sqrt(dx * dx + dy * dy);
-            if (distance < hero.radius + 10) {
-                // 10 - радиус курсора мыши
-                hero.direction *= -1;
-            }
-        });
-    }, [heroes, mousePos]);
 
     const drawHeroes = (ctx: CanvasRenderingContext2D) => {
         heroes.current.forEach((hero) => {
@@ -111,10 +68,25 @@ export const GameCanvas: React.FC<TGameCanvasProps> = ({
         });
     };
 
+    const drawCursor = (ctx: CanvasRenderingContext2D) => {
+        ctx.beginPath();
+        ctx.arc(mousePos.x, mousePos.y, 5, 0, Math.PI * 2); // Радиус курсора - 5
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.5)'; 
+        ctx.fill();
+        ctx.closePath();
+      };
+
     const updateHeroes = () => {
         heroes.current.forEach((hero) => {
             hero.y += hero.speed * hero.direction;
             if (hero.y <= hero.radius || hero.y >= 600 - hero.radius) {
+                hero.direction *= -1;
+            }
+            const dx = hero.x - cursor.current.x;
+            const dy = hero.y - cursor.current.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            if (distance <= hero.radius + 5) {
+                // 5 - радиус курсора мыши
                 hero.direction *= -1;
             }
         });
@@ -172,7 +144,7 @@ export const GameCanvas: React.FC<TGameCanvasProps> = ({
             const clickedHero = heroes.current.find((hero) => {
                 const dx = x - hero.x;
                 const dy = y - hero.y;
-                return Math.sqrt(dx * dx + dy * dy) < hero.radius;
+                return Math.sqrt(dx * dx + dy * dy) < hero.radius + 5;
             });
             if (clickedHero) {
                 onHeroClick(clickedHero.id);
@@ -191,6 +163,47 @@ export const GameCanvas: React.FC<TGameCanvasProps> = ({
         }
     };
 
+
+    useEffect(() => {
+        const canvas = canvasRef.current;
+        const ctx = canvas?.getContext('2d');
+        if (canvas && ctx) {
+            const render = () => {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                drawHeroes(ctx);
+                drawSpells(ctx);
+                drawCursor(ctx);
+                updateHeroes();
+                updateSpells();
+                checkCollisions();
+                requestAnimationFrame(render);
+            };
+            render();
+        }
+    }, []);
+
+    useEffect(() => {
+        const intervalIds = heroes.current.map((hero) => {
+            const settings = heroSettings[hero.id];
+            hero.color = settings.color;
+            hero.speed = settings.speed / 10;
+            return setInterval(
+                () => shootSpell(hero),
+                1000 / settings.frequency
+            );
+        });
+
+        return () => {
+            intervalIds.forEach(clearInterval);
+        };
+    }, [heroSettings]);
+
+    useEffect(() => {
+        cursor.current.x = mousePos.x;
+        cursor.current.y = mousePos.y;
+    }, [cursor, mousePos]);
+
+
     return (
         <div className={s.wrapper}>
             <canvas
@@ -200,7 +213,7 @@ export const GameCanvas: React.FC<TGameCanvasProps> = ({
                 onClick={handleCanvasClick}
                 onMouseMove={handleMouseMove}
             />
-            <GameScores scores={scores}/>
+            <GameScores scores={scores} />
         </div>
     );
 };
