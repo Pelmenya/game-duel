@@ -1,11 +1,12 @@
 import s from './game-scores.module.css';
 
-export type TScores = {
-    scores: {
-        [key: number]: number;
-    };
+export type TScores = { [key: number]: number };
+
+export type TScoresProps = {
+    scores: TScores;
 };
-export const GameScores = ({ scores }: TScores) => {
+
+export const GameScores = ({ scores }: TScoresProps) => {
     return (
         <fieldset>
             <legend>Scores</legend>
