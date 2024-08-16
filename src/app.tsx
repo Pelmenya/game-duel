@@ -1,10 +1,11 @@
 import React, { useState, useCallback } from 'react';
 import { GameCanvas } from './components/game-canvas/game-canvas';
+import { SettingsMenu } from './components/game-menu/game-menu';
 import { THeroSettings } from './types/t-hero-settings';
 
 import './app.css'
 
-const App: React.FC = () => {
+export const App: React.FC = () => {
   const [selectedHero, setSelectedHero] = useState<number | null>(null);
   const [heroSettings, setHeroSettings] = useState<{ [key: number]: THeroSettings }>({
     1: { color: 'red', speed: 0.1, frequency: 2 },
@@ -43,8 +44,15 @@ const App: React.FC = () => {
   return (
     <div className="app">
       <GameCanvas onHeroClick={handleHeroClick} heroSettings={heroSettings} />
+      {selectedHero !== null && (
+        <SettingsMenu
+          heroId={selectedHero}
+          onClose={handleCloseMenu}
+          onChangeColor={handleChangeColor}
+          onChangeSpeed={handleChangeSpeed}
+          onChangeFrequency={handleChangeFrequency}
+        />
+      )}
     </div>
   );
 };
-
-export default App;
